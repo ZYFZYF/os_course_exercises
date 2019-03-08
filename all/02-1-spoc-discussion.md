@@ -20,19 +20,39 @@
 
 ## 3.1 BIOS
 -  x86中BIOS从磁盘读入的第一个扇区是是什么内容？为什么没有直接读入操作系统内核映像？
-- 比较UEFI和BIOS的区别。
-- 理解rcore中的Berkeley BootLoader (BBL)的功能。
+   -  主引导扇区
+   -  BIOS能做的事情有限，而且操作系统格式有别，无法直接读入
+-  比较UEFI和BIOS的区别。
+   -  UEFI比BIOS优越在三点：
+      -  安全性更强
+      -  启动配置更灵活
+      -  支持容量更大
+-  理解rcore中的Berkeley BootLoader (BBL)的功能。
 
 ## 3.2 系统启动流程
 
 - x86中分区引导扇区的结束标志是什么？
+  - `0X55AA`
 - x86中在UEFI中的可信启动有什么作用？
+  - 可以通过数字签名来保证安全性
 - RV中BBL的启动过程大致包括哪些内容？
 
 ## 3.3 中断、异常和系统调用比较
 - 什么是中断、异常和系统调用？
--  中断、异常和系统调用的处理流程有什么异同？
+  - 中断：外部设备的响应
+  - 异常：指令异常的响应
+  - 系统调用：程序主动调用的响应
+- 中断、异常和系统调用的处理流程有什么异同？
+  - 相同
+    - 都会进入内核态
+  - 不同
+    - 源头不同，中断源是外部设备，异常和系统调用源是应用程序
+    - 响应方式不同，中断是异步的，异常是同步的，系统调用异步和同步都可以
 - 以ucore/rcore lab8的answer为例，ucore的系统调用有哪些？大致的功能分类有哪些？
+  - 进程管理：包括 fork/exit/wait/exec/yield/kill/getpid/sleep
+  - 文件操作：包括 open/close/read/write/seek/fstat/fsync/getcwd/getdirentry/dup
+  - 内存管理：pgdir命令
+  - 外设输出：putc命令
 
 ## 3.4 linux系统调用分析
 - 通过分析[lab1_ex0](https://github.com/chyyuu/ucore_lab/blob/master/related_info/lab1/lab1-ex0.md)了解Linux应用的系统调用编写和含义。(仅实践，不用回答)
@@ -44,9 +64,11 @@
 - 以ucore/rcore lab8的answer为例，分析ucore 应用的系统调用编写和含义。
 - 以ucore/rcore lab8的answer为例，尝试修改并运行ucore OS kernel代码，使其具有类似Linux应用工具`strace`的功能，即能够显示出应用程序发出的系统调用，从而可以分析ucore应用的系统调用执行过程。
 
- 
+
 ## 3.6 请分析函数调用和系统调用的区别
 - 系统调用与函数调用的区别是什么？
+  - 是否进入内核态
+  - 是否有堆栈转换
 - 通过分析x86中函数调用规范以及`int`、`iret`、`call`和`ret`的指令准确功能和调用代码，比较x86中函数调用与系统调用的堆栈操作有什么不同？
 - 通过分析RV中函数调用规范以及`ecall`、`eret`、`jal`和`jalr`的指令准确功能和调用代码，比较x86中函数调用与系统调用的堆栈操作有什么不同？
 
